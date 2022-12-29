@@ -13,10 +13,11 @@ class Executor:
                 stdin = None
             else:
                 stdin = last_process.stdout
+
             cur_process = subprocess.Popen(cmds, stdin=stdin, stdout=subprocess.PIPE)
             last_process = cur_process
-        subprocess.run(final_cmds, stdin=last_process.stdout)
-
+        proc = subprocess.run(final_cmds, stdin=last_process.stdout, capture_output=True)
+        return CmdResult(proc.stdout.decode('utf-8'), proc.stderr.decode('utf-8'), proc.returncode)
 class CmdResult:
     def __init__(self, stdout, stderr, returncode):
         self._stdout = stdout
